@@ -6,7 +6,7 @@ const moviesRouter = express.Router();
 
 moviesRouter.get("/", async (req, res) => {
     try{
-        let data = await MovieModel.find({})
+        let data = await MovieModel.find()
         console.log('data:', data)
         res.send(data)
     }catch(err){
