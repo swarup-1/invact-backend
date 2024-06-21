@@ -9,12 +9,12 @@ app.use(express.json());
 app.use(cors());
 
 
-app.use("/movies", moviesRouter)
-
-
 app.get("/", (req, res) => {
     res.send("Welcome to Invact database");
 })
+
+app.use("/movies", moviesRouter)
+
 
 app.listen(8080, async()=>{
     try {
