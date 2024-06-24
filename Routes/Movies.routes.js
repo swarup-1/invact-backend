@@ -15,6 +15,7 @@ moviesRouter.get("/", async (req, res) => {
     }
 });
 
+
 moviesRouter.get("/:id", async (req, res) => {
     const ID = req.params.id;
     try {
