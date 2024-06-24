@@ -1,64 +1,70 @@
 const express = require('express');
 const { MovieModel } = require('../Models/Movie.model');
-const { validateRequestBody } = require('../Middlewares/BodyValidator');
 
 const moviesRouter = express.Router();
 
 moviesRouter.get("/", async (req, res) => {
-    try{
-        let data = await MovieModel.find()
-        console.log('data:', data)
-        res.send(data)
-    }catch(err){
-        res.send(err.message)
-        console.log('err:', err)
+    try {
+        console.log("Fetching all movies");
+        const data = await MovieModel.find();
+        console.log('Movies data fetched:', data);
+        res.status(200).send(data);
+    } catch (err) {
+        console.error('Error fetching movies:', err);
+        res.status(500).send({ message: 'Failed to fetch movies', error: err.message });
     }
-})
+});
+
 moviesRouter.get("/:id", async (req, res) => {
-    const ID = req.params.id
-    try{
-        let data = await MovieModel.findById(ID)
-        res.send(data)
-    }catch(err){
-        res.send(err.message)
-        console.log('err:', err)
+    const ID = req.params.id;
+    try {
+        console.log(`Fetching movie with ID: ${ID}`);
+        const data = await MovieModel.findById(ID);
+        res.status(200).send(data);
+    } catch (err) {
+        console.error(`Error fetching movie with ID ${ID}:`, err);
+        res.status(500).send({ message: `Failed to fetch movie with ID ${ID}`, error: err.message });
     }
-})
+});
 
-moviesRouter.post("/", validateRequestBody, async (req, res) => {
-    let payload = req.body
-    try{
-        let data = new MovieModel(payload)
+moviesRouter.post("/", async (req, res) => {
+    const payload = req.body;
+    try {
+        console.log("Adding new movie:", payload);
+        const data = new MovieModel(payload);
         await data.save();
-        res.send("New Film Added")
-    }catch(err){
-        console.log('err:', err)
+        res.status(201).send("New Film Added");
+    } catch (err) {
+        console.error('Error adding new movie:', err);
+        res.status(500).send({ message: 'Failed to add new movie', error: err.message });
     }
-})
-moviesRouter.patch("/:id", validateRequestBody, async (req, res) => {
-    let ID = req.params.id
-    let payload = req.body
-    try{
-        let data = await MovieModel.findByIdAndUpdate({_id:ID},payload)
-        res.send(data)
-    }catch(err){
-        console.log('err:', err)
+});
+
+moviesRouter.patch("/:id", async (req, res) => {
+    const ID = req.params.id;
+    const payload = req.body;
+    try {
+        console.log(`Updating movie with ID: ${ID}`);
+        const data = await MovieModel.findByIdAndUpdate(ID, payload, { new: true });
+        res.status(200).send(data);
+    } catch (err) {
+        console.error(`Error updating movie with ID ${ID}:`, err);
+        res.status(500).send({ message: `Failed to update movie with ID ${ID}`, error: err.message });
     }
-})
+});
+
 moviesRouter.delete("/:id", async (req, res) => {
-    let ID = req.params.id
-    try{
-        let data = await MovieModel.findByIdAndDelete({_id:ID})
-        res.send("Data Deleted successfully!")
-    }catch(err){
-        console.log('err:', err)
+    const ID = req.params.id;
+    try {
+        console.log(`Deleting movie with ID: ${ID}`);
+        await MovieModel.findByIdAndDelete(ID);
+        res.status(200).send("Data Deleted successfully!");
+    } catch (err) {
+        console.error(`Error deleting movie with ID ${ID}:`, err);
+        res.status(500).send({ message: `Failed to delete movie with ID ${ID}`, error: err.message });
     }
-    
-})
-
-
-
+});
 
 module.exports = {
     moviesRouter
-}
+};

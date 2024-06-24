@@ -7,11 +7,10 @@ require('dotenv').config();
 const app = express();
 app.use(express.json());
 
-// Configure CORS to allow all origins
 app.use(cors({
-    origin: '*', // Allow all origins
-    methods: ['GET', 'POST', 'PATCH', 'DELETE'], // Specify allowed methods
-    credentials: true, // Include credentials if needed
+    origin: '*',
+    methods: ['GET', 'POST', 'PATCH', 'DELETE'],
+    credentials: true,
 }));
 
 app.get("/", (req, res) => {
@@ -20,12 +19,16 @@ app.get("/", (req, res) => {
 
 app.use("/movies", moviesRouter);
 
-app.listen(8080, async () => {
+const startServer = async () => {
     try {
         await connections;
         console.log("Connected to DB");
+        app.listen(8080, () => {
+            console.log(`Server is listening on port 8080`);
+        });
     } catch (error) {
-        console.log(error);
+        console.error("Failed to connect to DB:", error);
     }
-    console.log(`listening on port 8080`);
-});
+};
+
+startServer();
