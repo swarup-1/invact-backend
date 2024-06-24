@@ -7,9 +7,8 @@ require('dotenv').config()
 const app = express();
 app.use(express.json());
 
-// Configure CORS to allow requests from http://localhost:3000
 app.use(cors({
-    origin: 'https://invact-frontend.vercel.app/',
+    origin: 'https://invact-frontend.vercel.app',
 }));
 
 app.get("/", (req, res) => {
